@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { ScrollView, View, StyleSheet, Text, TextInput, Button } from "react-native";
 import colors from "../utils/colors";
 import { useDispatch } from "react-redux";
-import { addPlace } from "../store/place.slice";
+import { savePlace } from "../store/place.slice";
 import ImageSelector from "../components/ImageSelector";
 
 const styles = StyleSheet.create({
@@ -28,18 +28,21 @@ const styles = StyleSheet.create({
 const NewPlaceSreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [title, setTitle] = useState("");
+  const [image, setImage] = useState("");
 
   const onHandleTitleChange = (text) => setTitle(text);
   const onHandleSubmit = () => {
-    dispatch(addPlace(title));
+    dispatch(savePlace(title, image));
     navigation.navigate("Place");
   }
+
+  const onHandleImageSelect = (imageUrl) => setImage(imageUrl);
   return (
     <ScrollView style={styles.container}>
      <View style={styles.content}>
         <Text style={styles.title}>Titulo</Text>
         <TextInput style={styles.input} placeholder="Nueva ubicacion"  onChangeText={onHandleTitleChange} value={title}/>
-        <ImageSelector onImage={(image) => console.log(image)} />
+        <ImageSelector onImage={onHandleImageSelect} />
         <Button 
           title="Grabar Direccion"
           color={colors.primary}
