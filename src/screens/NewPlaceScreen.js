@@ -3,6 +3,7 @@ import { ScrollView, View, StyleSheet, Text, TextInput, Button } from "react-nat
 import colors from "../utils/colors";
 import { useDispatch } from "react-redux";
 import { addPlace } from "../store/place.slice";
+import ImageSelector from "../components/ImageSelector";
 
 const styles = StyleSheet.create({
   container: {
@@ -38,6 +39,7 @@ const NewPlaceSreen = ({ navigation }) => {
      <View style={styles.content}>
         <Text style={styles.title}>Titulo</Text>
         <TextInput style={styles.input} placeholder="Nueva ubicacion"  onChangeText={onHandleTitleChange} value={title}/>
+        <ImageSelector onImage={(image) => console.log(image)} />
         <Button 
           title="Grabar Direccion"
           color={colors.primary}
