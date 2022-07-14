@@ -34,7 +34,7 @@ const NewPlaceSreen = ({ navigation }) => {
 
   const onHandleTitleChange = (text) => setTitle(text);
   const onHandleSubmit = () => {
-    dispatch(savePlace(title, image));
+    dispatch(savePlace(title, image, location));
     navigation.navigate("Place");
   }
 

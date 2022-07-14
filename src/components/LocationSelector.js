@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Button, Text, StyleSheet, Alert } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import * as Location from "expo-location";
 import colors from "../utils/colors";
+import MapPreview from "./MapPreview";
 
 const styles = StyleSheet.create({
     container: {
@@ -20,10 +22,25 @@ const styles = StyleSheet.create({
         width: "100%",
         height: "100%",
     },
+    buttons: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+    }
 })
 
 const LocationSelector = ({ onLocation }) => {
     const [pickedLocation, setPickedLocation] = useState();
+    const navigation = useNavigation();
+    const route = useRoute();
+
+    const mapLocation = route?.params?.mapLocation;
+
+    useEffect(() => {
+        if(mapLocation){
+            setPickedLocation(mapLocation);
+            onLocation(mapLocation)
+        }
+    }, [mapLocation]);
 
     const handleGetLocation = async () => {
         const isLocationPermissionGranted = await verifyPermissions();
@@ -57,20 +74,29 @@ const LocationSelector = ({ onLocation }) => {
         return true;
     }
 
+    const handlePickedLocation = async (location) => {
+        const isLocationPermissionGranted = await verifyPermissions();
+        if(!isLocationPermissionGranted) return;
+        navigation.navigate("Map");
+    }
+
     return (
         <View style={styles.container}>
-            <View style={styles.preview}>
-                {!pickedLocation ? (
-                    <Text>No hay una ubicación seleccionada</Text>
-                ) : (
-                    <Text>{`latitud: ${pickedLocation.lat}, longitud: ${pickedLocation.lng}`}</Text>
-                )}
+            <MapPreview location={pickedLocation} style={styles.preview}>
+                <Text>localizacion en proceso</Text>
+            </MapPreview>
+            <View style={styles.buttons}>
+                <Button 
+                    title="Obtener ubicación"
+                    onPress={handleGetLocation}
+                    color={colors.primary}
+                />
+                <Button 
+                    title="Elegir desde el mapa"
+                    onPress={handlePickedLocation}
+                    color={colors.secondary}
+                />
             </View>
-            <Button 
-                title="Obtener ubicación"
-                onPress={handleGetLocation}
-                color={colors.primary}
-            />
         </View>
     )
 }

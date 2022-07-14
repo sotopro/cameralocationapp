@@ -21,7 +21,7 @@ const PlaceListScreen = ({ navigation }) => {
     navigation.navigate("PlaceDetail", { placeId: id });
   }
   const renderItem = ({ item }) => (
-    <PlaceItem {...item} address='123 Calle , Ciudad, Distrito' onSelect={onSelectPlace} />
+    <PlaceItem {...item} onSelect={onSelectPlace} />
   )
 
   const ListEmptyComponent = () => (
