@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import * as FileSystem from "expo-file-system";
 import Place from "../models/Place";
 import { URL_GEOCODING } from "../utils/maps";
-import { inserAddress } from "../db";
+import { inserAddress, getAddress } from "../db";
 
 const initialState = {
   places: [],
@@ -15,11 +15,14 @@ const placeSlice = createSlice({
     addPlace: (state, action) => {
       const newPlace = new Place(action.payload.id.toString(), action.payload.title, action.payload.image, action.payload.address, action.payload.coords);
       state.places.push(newPlace);
+    },
+    loadAddress: (state, action) => {
+      state.places = action.payload;
     }
-  },
+  }
 });
 
-export const { addPlace } = placeSlice.actions;
+export const { addPlace, loadAddress } = placeSlice.actions;
 
 export const savePlace = (title, image, coords) => {
   return async (dispatch) => {
@@ -53,6 +56,17 @@ export const savePlace = (title, image, coords) => {
     }
 
     dispatch(addPlace({ id: result.insertId, title, image: Path, address, coords }));
+  }
+}
+
+export const loadPlaces = () => {
+  return async (dispatch) => {
+    try {
+      const result = await getAddress();
+      dispatch(loadAddress(result.rows._array));
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
